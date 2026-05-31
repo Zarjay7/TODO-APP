@@ -265,8 +265,10 @@ function App() {
                 <button 
                   key={cat.id} 
                   onClick={() => {
-                    // For now, just filter view by this category (simple testable behavior)
-                    // Future: could add a "filter by category" mode
+                    // Quick testable behavior: filter current view to this category
+                    // For simplicity we just set search to the category name for now
+                    // Better: could add a categoryFilter state later
+                    setSearchQuery(cat.name);
                   }}
                   className="w-full text-left px-4 py-2 rounded-2xl hover:bg-[var(--surface-alt)] flex items-center gap-2 text-[var(--text)]"
                 >
