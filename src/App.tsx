@@ -500,6 +500,30 @@ function App() {
             <div>{overdueTasks} overdue</div>
             <div className="pt-1 text-[var(--accent)] font-medium">{currentStreak} day streak</div>
           </div>
+
+          {/* Mini Calendar (from the plan) */}
+          <div className="mt-6">
+            <div className="text-xs font-medium mb-2 text-[var(--text-h)]">June 2026</div>
+            <div className="grid grid-cols-7 gap-1 text-[10px] text-center text-[var(--text-muted)]">
+              {['S','M','T','W','T','F','S'].map((d, i) => (
+                <div key={i} className="font-medium">{d}</div>
+              ))}
+              {/* Simple June 2026 calendar (today highlighted) */}
+              {Array.from({ length: 35 }).map((_, i) => {
+                const day = i - 6; // June 1 is on Monday in this layout
+                const isToday = day === 1; // Mock today as June 1 for demo
+                if (day < 1 || day > 30) return <div key={i} />;
+                return (
+                  <div 
+                    key={i} 
+                    className={`py-0.5 rounded ${isToday ? 'bg-[var(--accent)] text-white font-medium' : ''}`}
+                  >
+                    {day}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
 
