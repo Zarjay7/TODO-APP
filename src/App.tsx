@@ -44,6 +44,7 @@ function App() {
     deleteTask,
     toggleComplete,
     reorderTasks,
+    addCategory,
   } = useTasks()
 
   // Theme handling
@@ -227,13 +228,34 @@ function App() {
           <div className="mt-auto pt-6 border-t border-[var(--border)] mx-1">
             <div className="px-4 py-2 text-xs uppercase tracking-[0.5px] text-[var(--text-muted)] font-medium">Categories</div>
             <div className="space-y-px text-sm">
-              {['Work', 'Home', 'Health', 'Errands'].map(cat => (
-                <button key={cat} className="w-full text-left px-4 py-2 rounded-2xl hover:bg-[var(--surface-alt)] flex items-center gap-2 text-[var(--text)]">
-                  <span className="inline-block w-2 h-2 rounded-full bg-[var(--accent-weak)]" />
-                  {cat}
+              {categories.map(cat => (
+                <button 
+                  key={cat.id} 
+                  onClick={() => {
+                    // For now, just filter view by this category (simple testable behavior)
+                    // Future: could add a "filter by category" mode
+                  }}
+                  className="w-full text-left px-4 py-2 rounded-2xl hover:bg-[var(--surface-alt)] flex items-center gap-2 text-[var(--text)]"
+                >
+                  <span 
+                    className="inline-block w-2 h-2 rounded-full" 
+                    style={{ backgroundColor: cat.color }}
+                  />
+                  {cat.name}
                 </button>
               ))}
-              <button className="w-full text-left px-4 py-2 rounded-2xl hover:bg-[var(--surface-alt)] text-[var(--accent)] text-sm flex items-center gap-2">
+              <button 
+                onClick={() => {
+                  const name = prompt('New category name:');
+                  if (name && name.trim()) {
+                    // Simple color for now
+                    const colors = ['#5c6b7a', '#8a6f47', '#4a704f', '#7a5a7a', '#b85c38'];
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    addCategory(name.trim(), color);
+                  }
+                }}
+                className="w-full text-left px-4 py-2 rounded-2xl hover:bg-[var(--surface-alt)] text-[var(--accent)] text-sm flex items-center gap-2"
+              >
                 + New Category
               </button>
             </div>
