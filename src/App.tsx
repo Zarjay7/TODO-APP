@@ -497,32 +497,50 @@ function App() {
             <div className="pt-1 text-[var(--accent)] font-medium">{currentStreak} day streak</div>
           </div>
 
-          {/* Mini Calendar (from the plan) - skeuomorphic treatment */}
+          {/* Mini Calendar (from the plan) - skeuomorphic + dynamic */}
           <div className="mt-6">
-            <div className="text-xs font-medium mb-2 text-[var(--text-h)]">June 2026</div>
+            <div className="text-xs font-medium mb-2 text-[var(--text-h)]">
+              {new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}
+            </div>
             <div className="p-2 rounded-2xl bg-[var(--surface)] border border-[var(--border)] shadow-sm">
               <div className="grid grid-cols-7 gap-1 text-[10px] text-center text-[var(--text-muted)]">
                 {['S','M','T','W','T','F','S'].map((d, i) => (
                   <div key={i} className="font-medium py-0.5">{d}</div>
                 ))}
-                {/* Simple June 2026 calendar (today highlighted) */}
-                {Array.from({ length: 35 }).map((_, i) => {
-                  const day = i - 6;
-                  const isToday = day === 1; // Mock today
-                  if (day < 1 || day > 30) return <div key={i} />;
-                  return (
-                    <div 
-                      key={i} 
-                      className={`py-1 rounded-lg text-[10px] transition-all ${
-                        isToday 
-                          ? 'bg-[var(--accent)] text-white font-semibold shadow-sm' 
-                          : 'hover:bg-[var(--surface-alt)]'
-                      }`}
-                    >
-                      {day}
-                    </div>
-                  );
-                })}
+                {/* Dynamic current month calendar with real today highlighted */}
+                {(() => {
+                  const now = new Date();
+                  const year = now.getFullYear();
+                  const month = now.getMonth();
+                  const today = now.getDate();
+                  const firstDay = new Date(year, month, 1).getDay();
+                  const daysInMonth = new Date(year, month + 1, 0).getDate();
+                  const cells = [];
+
+                  // Empty cells before first day
+                  for (let i = 0; i < firstDay; i++) {
+                    cells.push(<div key={`empty-${i}`} />);
+                  }
+
+                  // Day cells
+                  for (let d = 1; d <= daysInMonth; d++) {
+                    const isToday = d === today;
+                    cells.push(
+                      <div 
+                        key={d} 
+                        className={`py-1 rounded-lg text-[10px] transition-all ${
+                          isToday 
+                            ? 'bg-[var(--accent)] text-white font-semibold shadow-sm' 
+                            : 'hover:bg-[var(--surface-alt)]'
+                        }`}
+                      >
+                        {d}
+                      </div>
+                    );
+                  }
+
+                  return cells;
+                })()}
               </div>
             </div>
           </div>
