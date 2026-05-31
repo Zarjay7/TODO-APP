@@ -40,6 +40,21 @@ function App() {
     )
   }
 
+  // Due date helpers for beautiful skeuomorphic badges
+  const getDueBadgeClass = (due: string) => {
+    const today = '2026-05-31'
+    if (due < today) return 'overdue'
+    if (due === today) return 'today'
+    return 'future'
+  }
+
+  const getDueLabel = (due: string) => {
+    const today = '2026-05-31'
+    if (due < today) return 'Overdue'
+    if (due === today) return 'Today'
+    return new Date(due).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+  }
+
   const filteredTasks = mockTasks
     .filter(t => {
       if (searchQuery && !t.title.toLowerCase().includes(searchQuery.toLowerCase())) return false
@@ -191,14 +206,28 @@ function App() {
           <div className="px-4 md:px-6 pb-28 space-y-3">
             {filteredTasks.length > 0 ? (
               filteredTasks.map(task => (
-                <div key={task.id} className="skeu-card p-4 md:p-5 flex gap-4 group">
+                <div 
+                  key={task.id} 
+                  className="skeu-card p-4 md:p-5 flex gap-4 group relative overflow-hidden"
+                  style={{
+                    borderLeft: task.priority === 'high' 
+                      ? '4px solid #c24141' 
+                      : task.priority === 'medium' 
+                        ? '4px solid #b7791f' 
+                        : '4px solid #4a704f'
+                  }}
+                >
                   <button 
                     className="skeu-checkbox mt-1" 
                     data-checked={task.completed ? "true" : "false"}
                     aria-label={task.completed ? "Mark incomplete" : "Mark complete"}
                     onClick={() => toggleMockTask(task.id)}
                   >
-                    {task.completed && <CheckCircle2 size={16} />}
+                    {task.completed && (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5">
+                        <polyline points="5 12 10 17 19 7" />
+                      </svg>
+                    )}
                   </button>
 
                   <div className="flex-1 min-w-0 pt-0.5">
@@ -206,8 +235,10 @@ function App() {
                       {task.title}
                     </div>
                     {task.due && (
-                      <div className="text-xs mt-1.5 text-[var(--text-muted)] flex items-center gap-1.5">
-                        <Clock size={13} /> Due {new Date(task.due).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                      <div className="mt-1.5">
+                        <span className={`due-badge ${getDueBadgeClass(task.due)}`}>
+                          {getDueLabel(task.due)}
+                        </span>
                       </div>
                     )}
                     {task.category && (
@@ -218,14 +249,19 @@ function App() {
                   </div>
 
                   <div className="flex flex-col items-end justify-between text-xs">
-                    <div className={`px-3 py-0.5 rounded-full font-medium tracking-wide ${
-                      task.priority === 'high' ? 'bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-400' :
-                      task.priority === 'medium' ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400' :
-                      'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400'
+                    {/* Priority indicator - left border style on card + badge */}
+                    <div className={`px-3 py-0.5 rounded-full font-medium tracking-[0.3px] text-[10px] uppercase flex items-center gap-1.5 ${
+                      task.priority === 'high' ? 'bg-red-100/70 text-red-700 dark:bg-red-950/70 dark:text-red-300' :
+                      task.priority === 'medium' ? 'bg-amber-100/70 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300' :
+                      'bg-emerald-100/70 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300'
                     }`}>
+                      <span className={`inline-block w-1.5 h-1.5 rounded-full ${
+                        task.priority === 'high' ? 'bg-red-500' :
+                        task.priority === 'medium' ? 'bg-amber-500' : 'bg-emerald-500'
+                      }`} />
                       {task.priority}
                     </div>
-                    <button className="opacity-0 group-hover:opacity-100 text-[var(--text-muted)] hover:text-[var(--text)] transition text-xs">Edit</button>
+                    <button className="opacity-0 group-hover:opacity-100 text-[var(--text-muted)] hover:text-[var(--text)] transition text-xs mt-1">Edit</button>
                   </div>
                 </div>
               ))
