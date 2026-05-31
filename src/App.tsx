@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, Search, CheckCircle2, Archive, Inbox, Moon, Sun, Menu, Calendar, Clock } from 'lucide-react'
+import { Plus, CheckCircle2, Archive, Inbox, Moon, Sun, Menu, Calendar, Clock } from 'lucide-react'
 import {
   DndContext,
   closestCenter,
@@ -305,16 +305,13 @@ function App() {
         </div>
 
         {/* Search */}
-        <div className="relative w-full max-w-md mx-4 hidden md:block">
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">
-            <Search size={16} />
-          </div>
+        <div className="w-full max-w-md mx-4 hidden md:block">
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search tasks..."
-            className="skeu-input w-full pl-9 pr-4 py-2 text-sm"
+            className="skeu-input w-full pl-3 pr-4 py-2 text-sm"
           />
         </div>
 
@@ -577,14 +574,13 @@ function App() {
 
       {/* Mobile search bar */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 p-3 border-t border-[var(--border)] bg-[var(--surface)] z-40">
-        <div className="relative">
-          <Search size={16} className="absolute left-3 top-3.5 text-[var(--text-muted)]" />
+        <div>
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search tasks..."
-            className="skeu-input w-full pl-9 text-sm py-3"
+            className="skeu-input w-full pl-3 text-sm py-3"
           />
         </div>
       </div>
