@@ -444,10 +444,9 @@ function App() {
             <div className="px-4 md:px-6 pb-28 space-y-3">
               <div 
                 key={viewTransitionKey}
-                className="transition-all duration-200 ease-out"
+                className="transition-all"
                 style={{ 
-                  opacity: 0.6, 
-                  animation: 'fadeInSlide 180ms ease-out forwards' 
+                  animation: 'fadeInSlide 280ms cubic-bezier(0.25, 0.1, 0.25, 1) forwards' 
                 }}
               >
               {isLoading ? (
