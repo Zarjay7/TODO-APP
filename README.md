@@ -19,7 +19,7 @@ Elegant task management with subtle shadows, embossed surfaces, delicate gradien
 
 **Tech stack**: React 19 + Vite + TypeScript + Tailwind + custom CSS (no heavy component libraries — the skeuomorphism is hand-crafted).
 
-See the detailed [implementation plan and design vision](light-skeuomorphic-task-app-plan.md) that guided this project.
+See the detailed [implementation plan and design vision](docs/DESIGN_PLAN.md) that guided this project.
 
 ---
 
