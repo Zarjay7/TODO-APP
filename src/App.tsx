@@ -306,7 +306,7 @@ function App() {
 
         {/* Search */}
         <div className="relative w-full max-w-md mx-4 hidden md:block">
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">
+          <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">
             <Search size={16} />
           </div>
           <input
@@ -554,7 +554,7 @@ function App() {
       {/* Mobile search bar */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 p-3 border-t border-[var(--border)] bg-[var(--surface)] z-40">
         <div className="relative">
-          <Search size={16} className="absolute left-4 top-3.5 text-[var(--text-muted)]" />
+          <Search size={16} className="absolute left-5 top-3.5 text-[var(--text-muted)]" />
           <input
             type="text"
             value={searchQuery}
