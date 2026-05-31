@@ -1,95 +1,143 @@
 # Tasks
 
-**A beautiful, tactile, installable task management PWA built with refined light skeuomorphism.**
+> **A refined, tactile task management PWA built with light skeuomorphism.**
 
-Elegant task management with subtle shadows, embossed surfaces, delicate gradients, and Apple-inspired tactility — available in a soft light theme and an elegant dark grey mode.
+Beautiful, installable, and fully offline-capable. Designed with obsessive attention to material feel — subtle shadows, embossed surfaces, and micro-interactions that make every tap and click feel premium.
 
-> **Design goal**: Every surface should feel premium and touchable. No generic UI. Pure CSS craftsmanship for depth and micro-interactions.
-
----
-
-## Features (Vision)
-
-- **Skeuomorphic Design System** — Raised cards, embossed controls, recessed inputs, frosted sidebar, custom scale-pop checkboxes, floating FAB with realistic depth. Works beautifully in both light and dark grey themes.
-- **Smart Organization** — Inbox, Today, Upcoming, Completed, All Tasks + fully editable color-coded categories.
-- **Powerful Interaction** — Drag & drop reordering (touch + mouse), global search, rich filtering & sorting, due date badges with visual states (overdue pulse, today, future).
-- **Delightful Details** — Smooth micro-interactions, undo toasts, progress overview, keyboard shortcuts (`N` new, `/` search, `Esc` close), charming empty states.
-- **Full PWA** — Installable, works completely offline (view + edit tasks), standalone app experience, iOS Add-to-Home-Screen guidance.
-- **Accessibility & Quality** — WCAG 2.2 AA target, full keyboard navigation, high Lighthouse scores.
-
-**Tech stack**: React 19 + Vite + TypeScript + Tailwind + custom CSS (no heavy component libraries — the skeuomorphism is hand-crafted).
-
-See the detailed [implementation plan and design vision](docs/DESIGN_PLAN.md) that guided this project.
+![Tasks Preview](https://via.placeholder.com/1200x630/f8f7f4/3f3a35?text=Tasks+-+Light+Skeuomorphic+PWA)
 
 ---
 
-## Current Status
+## Design Philosophy
 
-Early development — beautiful responsive visual shell with working theme toggle (light ↔ elegant dark grey), navigation, mock tasks, skeuomorphic primitives, and PWA scaffolding is in place.
+This project is an exploration of **light skeuomorphism** in 2026:
 
-Full CRUD, persistence, real drag-and-drop, modals, install flow, and polish are actively being built following the phased plan.
+- Soft off-white and pure surfaces
+- Layered, delicate shadows instead of flat design
+- Embossed controls and recessed inputs
+- Large rounded corners with physical weight
+- Refined bluish-gray accents (never harsh)
+- Consistent tactile depth in both light and elegant dark grey modes
+
+The goal is simple: every UI element should feel like it has mass and responds to touch.
+
+Detailed vision and implementation plan: [docs/DESIGN_PLAN.md](docs/DESIGN_PLAN.md)
+
+---
+
+## Features
+
+| Category              | Highlights |
+|-----------------------|----------|
+| **Skeuomorphic UI**   | Raised cards with inset highlights, custom embossed checkboxes with scale-pop animation, floating FAB, frosted sidebar, recessed form fields |
+| **Organization**      | Smart views (Inbox, Today, Upcoming, Completed, All), fully editable color-coded categories |
+| **Interaction**       | Drag & drop reordering (mouse + touch), powerful search + filtering + sorting, rich due date badges (with overdue pulse) |
+| **Polish**            | Keyboard shortcuts, undo toasts, progress indicators, smooth micro-interactions, charming empty states |
+| **PWA**               | One-click install, works completely offline, standalone mode, iOS Add to Home Screen support |
+| **Quality**           | WCAG 2.2 AA target, high Lighthouse scores, React 19 + TypeScript |
+
+**Current Status**: Early development. The visual design system and responsive shell are in place with working theme switching. Full task management, persistence, and PWA install flow are actively in progress.
+
+---
+
+## Tech Stack
+
+- **React 19** + **TypeScript**
+- **Vite** (blazing fast HMR and builds)
+- **Tailwind CSS 4** + heavy custom CSS for skeuomorphic effects
+- **@dnd-kit** for accessible, touch-friendly drag and drop
+- **Vite PWA Plugin** for installable + offline experience
+- Zero heavy UI component libraries — all tactile effects are hand-crafted in CSS
 
 ---
 
 ## Getting Started
 
+### Prerequisites
+
+- Node.js 20+
+- npm or pnpm
+
+### Installation
+
 ```bash
+# Clone the repository
+git clone https://github.com/Zarjay7/TODO-APP.git
+cd TODO-APP
+
 # Install dependencies
 npm install
 
-# Start development server (with HMR)
+# Start development server
 npm run dev
 ```
 
-Open http://localhost:5173
+Open [http://localhost:5173](http://localhost:5173)
+
+### Production Build
 
 ```bash
-# Production build
 npm run build
-
-# Preview production build locally
 npm run preview
 ```
 
 ---
 
-## Project Structure (Key)
+## Project Structure
 
-- `src/` — React app
-  - `components/` — Skeuomorphic primitives (TaskCard, FAB, Modal, etc.)
-  - `styles/` — Design tokens + custom skeuomorphic CSS layers
-  - `lib/` — Types, persistence, utilities
-- `public/` — PWA manifest & icons
-- `light-skeuomorphic-task-app-plan.md` — The complete design + implementation roadmap
+```
+TODO-APP/
+├── src/
+│   ├── components/     # Reusable skeuomorphic UI primitives
+│   ├── styles/         # Design tokens + custom CSS (the heart of the aesthetic)
+│   ├── lib/            # Types, utilities, persistence layer
+│   └── hooks/          # Custom React hooks
+├── public/             # PWA manifest, icons, static assets
+├── docs/
+│   └── DESIGN_PLAN.md  # Complete design vision + phased implementation roadmap
+└── README.md
+```
 
 ---
 
-## Roadmap Highlights
+## Roadmap
 
-Phased delivery with runnable milestones after every phase (see the plan file for full details):
+See [docs/DESIGN_PLAN.md](docs/DESIGN_PLAN.md) for the full detailed plan.
 
-1. Bootstrap + visual design system foundation (largely complete)
-2. Real state management, CRUD, localStorage persistence, DnD, filters
-3. Full PWA capabilities (install prompt, offline, iOS handling)
-4. Polish, accessibility, performance, Lighthouse 95+ targets
-5. Deploy + documentation
+**Current Focus (Phase 1 → Phase 2)**
+- [x] Professional light + dark skeuomorphic design system
+- [x] Responsive shell + theme switching
+- [ ] Real task state + localStorage persistence
+- [ ] Full CRUD + drag & drop
+- [ ] Production-ready PWA (install prompt, offline editing, iOS guidance)
 
-Future (v2 ideas): cloud sync, collaboration, AI assistance, voice input.
+**Later**
+- Lighthouse 95+ across all categories
+- Refined empty states, loading skeletons, and micro-interactions
+- Deployment + documentation
 
 ---
 
 ## Contributing
 
-This project prioritizes craft and attention to the tactile aesthetic. Contributions that preserve or elevate the skeuomorphic feel are very welcome.
+This project values **craft** above speed.
+
+When contributing:
+- Preserve or improve the tactile, skeuomorphic aesthetic
+- Keep custom CSS as the source of truth for visual depth (avoid generic component libraries)
+- Test both light and dark themes
+- Consider touch + keyboard interactions
+
+Pull requests that elevate the material feel are especially welcome.
 
 ---
 
 ## License
 
-MIT (to be added)
+MIT © Zarjay7
 
 ---
 
-**Built with care for the 2026 light skeuomorphism trend.**
+**Built with care for the 2026 light skeuomorphism movement.**
 
-Repository: https://github.com/Zarjay7/TODO-APP
+[GitHub](https://github.com/Zarjay7/TODO-APP) • [Design Plan](docs/DESIGN_PLAN.md)
