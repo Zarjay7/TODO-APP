@@ -65,7 +65,7 @@ export function TaskCard({ task, category, onToggleComplete, onEdit }: TaskCardP
       ref={setNodeRef}
       {...attributes}
       {...listeners}
-      className="skeu-card p-4 md:p-5 flex gap-4 group relative overflow-hidden cursor-grab active:cursor-grabbing active:scale-[0.995] transition-transform"
+      className="skeu-card TaskCard p-4 md:p-5 flex gap-4 group relative overflow-hidden cursor-grab active:cursor-grabbing active:scale-[0.995] transition-transform"
       style={{ 
         borderLeft: `4px solid ${priorityBorderColor}`,
         ...style 

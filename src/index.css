@@ -90,7 +90,13 @@ body {
 }
 
 .skeu-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Stronger lift specifically for interactive task cards */
+.TaskCard:hover {
+  transform: translateY(-4px);
   box-shadow: var(--shadow-lg);
 }
 
@@ -141,10 +147,10 @@ body {
 
 /* Pressed / active state — feels like you're pushing it in */
 .skeu-checkbox:active {
-  transform: scale(0.92);
+  transform: scale(0.88);
   box-shadow: 
-    inset 0 3px 5px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    inset 0 4px 7px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 /* Checked state — filled with subtle depth */
@@ -238,12 +244,20 @@ body {
   pointer-events: none;
 }
 
-.skeu-fab:active {
-  transform: scale(0.94) translateY(2px);
+.skeu-fab:hover {
+  transform: scale(1.03);
   box-shadow: 
-    0 6px 16px rgba(0, 0, 0, 0.15),
-    0 2px 6px rgba(0, 0, 0, 0.1),
-    inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    0 14px 30px rgba(0, 0, 0, 0.22),
+    0 6px 14px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.skeu-fab:active {
+  transform: scale(0.92) translateY(3px);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.18),
+    0 2px 4px rgba(0, 0, 0, 0.12),
+    inset 0 3px 6px rgba(0, 0, 0, 0.25);
 }
 
 /* Due date badges with proper states */
