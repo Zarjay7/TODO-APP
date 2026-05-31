@@ -19,6 +19,7 @@ import { Toast } from './components/Toast'
 import { EmptyState } from './components/EmptyState'
 import { TaskSkeleton } from './components/TaskSkeleton'
 import { burstConfetti } from './lib/confetti'
+import { ProgressRing } from './components/ProgressRing'
 import { useTasks } from './hooks/useTasks'
 import type { TaskView, Task } from './lib/types'
 
@@ -486,8 +487,13 @@ function App() {
         {/* Right panel - Dynamic Progress & Streak */}
         <div className="hidden xl:block w-80 border-l border-[var(--border)] p-6 bg-[var(--surface)]/30 flex-shrink-0">
           <div className="text-sm font-medium mb-3 text-[var(--text-h)]">Today’s Progress</div>
-          <div className="skeu-card aspect-square flex items-center justify-center text-6xl font-light tracking-tighter text-[var(--accent)]">
-            {completionPercent}<span className="text-2xl align-super">%</span>
+          <div className="skeu-card aspect-square flex flex-col items-center justify-center">
+            <div className="relative">
+              <ProgressRing percent={completionPercent} size={110} strokeWidth={9} />
+              <div className="absolute inset-0 flex items-center justify-center text-4xl font-light tracking-tighter text-[var(--accent)]">
+                {completionPercent}<span className="text-lg align-super">%</span>
+              </div>
+            </div>
           </div>
           <div className="mt-6 text-xs text-[var(--text-muted)] space-y-1">
             <div>{dueTodayTasks} tasks due today</div>
