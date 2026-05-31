@@ -306,7 +306,7 @@ function App() {
 
         {/* Search */}
         <div className="relative w-full max-w-md mx-4 hidden md:block">
-          <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">
+          <div className="absolute left-6 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">
             <Search size={16} />
           </div>
           <input
@@ -314,7 +314,7 @@ function App() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search tasks..."
-            className="skeu-input w-full pl-12 pr-4 py-2 text-sm"
+            className="skeu-input w-full pl-14 pr-4 py-2 text-sm"
           />
         </div>
 
@@ -554,13 +554,13 @@ function App() {
       {/* Mobile search bar */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 p-3 border-t border-[var(--border)] bg-[var(--surface)] z-40">
         <div className="relative">
-          <Search size={16} className="absolute left-5 top-3.5 text-[var(--text-muted)]" />
+          <Search size={16} className="absolute left-6 top-3.5 text-[var(--text-muted)]" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search tasks..."
-            className="skeu-input w-full pl-12 text-sm py-3"
+            className="skeu-input w-full pl-14 text-sm py-3"
           />
         </div>
       </div>
