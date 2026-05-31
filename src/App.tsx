@@ -1,15 +1,32 @@
 import { useState, useEffect } from 'react'
-import { Plus, Search, Calendar, CheckCircle2, Clock, Archive, Inbox, Moon, Sun, Menu } from 'lucide-react'
+import { Plus, Search, CheckCircle2, Clock, Archive, Inbox, Moon, Sun, Menu, Calendar } from 'lucide-react'
+import { TaskModal } from './components/TaskModal'
+import { useTasks } from './hooks/useTasks'
+import type { TaskView, Task } from './lib/types'
 
 type Theme = 'light' | 'dark'
 
 function App() {
   const [theme, setTheme] = useState<Theme>('light')
-  const [currentView, setCurrentView] = useState<'inbox' | 'today' | 'upcoming' | 'completed' | 'all'>('today')
-  const [searchQuery, setSearchQuery] = useState('')
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingTask, setEditingTask] = useState<Task | undefined>(undefined)
 
-  // Theme handling (persisted + system)
+  // Real task management with persistence
+  const {
+    filteredTasks,
+    categories,
+    currentView,
+    searchQuery,
+    setSearchQuery,
+    setCurrentView,
+    addTask,
+    updateTask,
+    deleteTask,
+    toggleComplete,
+  } = useTasks()
+
+  // Theme handling
   useEffect(() => {
     const saved = localStorage.getItem('theme') as Theme | null
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -25,52 +42,47 @@ function App() {
     localStorage.setItem('theme', next)
   }
 
-  // Mock tasks for visual shell (Phase 0/1) — interactive for demo
-  const [mockTasks, setMockTasks] = useState([
-    { id: '1', title: 'Prepare quarterly review deck', due: '2026-06-02', priority: 'high', category: 'Work', completed: false },
-    { id: '2', title: 'Water the monstera', due: '2026-05-31', priority: 'low', category: 'Home', completed: true },
-    { id: '3', title: 'Schedule dentist appointment', due: '2026-06-05', priority: 'medium', category: 'Health', completed: false },
-    { id: '4', title: 'Finish landing page animations', due: '2026-05-30', priority: 'high', category: 'Work', completed: false },
-    { id: '5', title: 'Buy oat milk and coffee', due: '', priority: 'low', category: 'Errands', completed: false },
-  ])
-
-  const toggleMockTask = (id: string) => {
-    setMockTasks(prev =>
-      prev.map(t => t.id === id ? { ...t, completed: !t.completed } : t)
-    )
+  // Modal handlers
+  const openNewTask = () => {
+    setEditingTask(undefined)
+    setIsModalOpen(true)
   }
 
-  // Due date helpers for beautiful skeuomorphic badges
-  const getDueBadgeClass = (due: string) => {
-    const today = '2026-05-31'
-    if (due < today) return 'overdue'
-    if (due === today) return 'today'
-    return 'future'
+  const openEditTask = (task: Task) => {
+    setEditingTask(task)
+    setIsModalOpen(true)
   }
 
-  const getDueLabel = (due: string) => {
-    const today = '2026-05-31'
-    if (due < today) return 'Overdue'
-    if (due === today) return 'Today'
-    return new Date(due).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+  const handleSaveTask = (taskData: Omit<Task, 'id' | 'createdAt' | 'completed' | 'order'>) => {
+    if (editingTask) {
+      updateTask(editingTask.id, taskData)
+    } else {
+      addTask(taskData)
+    }
+    setIsModalOpen(false)
+    setEditingTask(undefined)
   }
 
-  const filteredTasks = mockTasks
-    .filter(t => {
-      if (searchQuery && !t.title.toLowerCase().includes(searchQuery.toLowerCase())) return false
-      if (currentView === 'today') return t.due === '2026-05-31' || t.due === '2026-05-30'
-      if (currentView === 'upcoming') return t.due && t.due > '2026-05-31'
-      if (currentView === 'completed') return t.completed
-      if (currentView === 'inbox') return !t.category
-      return true
-    })
+  const handleDeleteTask = (id: string) => {
+    deleteTask(id)
+    setIsModalOpen(false)
+    setEditingTask(undefined)
+  }
 
-  const viewTitles: Record<string, string> = {
+  // View title
+  const viewTitles: Record<TaskView, string> = {
     inbox: 'Inbox',
     today: 'Today',
     upcoming: 'Upcoming',
     completed: 'Completed',
     all: 'All Tasks'
+  }
+
+  // Get category name for display
+  const getCategoryName = (categoryId?: string) => {
+    if (!categoryId) return null
+    const cat = categories.find(c => c.id === categoryId)
+    return cat?.name
   }
 
   return (
@@ -148,7 +160,7 @@ function App() {
               return (
                 <button
                   key={item.id}
-                  onClick={() => { setCurrentView(item.id as any); setIsMobileMenuOpen(false) }}
+                  onClick={() => { setCurrentView(item.id as TaskView); setIsMobileMenuOpen(false) }}
                   className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm transition-all active:scale-[0.985] ${
                     active 
                       ? 'bg-[var(--accent)]/10 text-[var(--accent)] font-medium' 
@@ -202,72 +214,84 @@ function App() {
             ))}
           </div>
 
-          {/* Task List */}
+          {/* Real Task List */}
           <div className="px-4 md:px-6 pb-28 space-y-3">
             {filteredTasks.length > 0 ? (
-              filteredTasks.map(task => (
-                <div 
-                  key={task.id} 
-                  className="skeu-card p-4 md:p-5 flex gap-4 group relative overflow-hidden"
-                  style={{
-                    borderLeft: task.priority === 'high' 
-                      ? '4px solid #c24141' 
-                      : task.priority === 'medium' 
-                        ? '4px solid #b7791f' 
-                        : '4px solid #4a704f'
-                  }}
-                >
-                  <button 
-                    className="skeu-checkbox mt-1" 
-                    data-checked={task.completed ? "true" : "false"}
-                    aria-label={task.completed ? "Mark incomplete" : "Mark complete"}
-                    onClick={() => toggleMockTask(task.id)}
+              filteredTasks.map(task => {
+                const categoryName = getCategoryName(task.categoryId);
+                const isOverdue = task.dueDate && task.dueDate < new Date().toISOString().split('T')[0] && !task.completed;
+
+                return (
+                  <div 
+                    key={task.id} 
+                    className="skeu-card p-4 md:p-5 flex gap-4 group relative overflow-hidden cursor-pointer"
+                    style={{
+                      borderLeft: task.priority === 'high' 
+                        ? '4px solid #c24141' 
+                        : task.priority === 'medium' 
+                          ? '4px solid #b7791f' 
+                          : '4px solid #4a704f'
+                    }}
+                    onClick={() => openEditTask(task)}
                   >
-                    {task.completed && (
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5">
-                        <polyline points="5 12 10 17 19 7" />
-                      </svg>
-                    )}
-                  </button>
+                    <button 
+                      className="skeu-checkbox mt-1" 
+                      data-checked={task.completed ? "true" : "false"}
+                      aria-label={task.completed ? "Mark incomplete" : "Mark complete"}
+                      onClick={(e) => { e.stopPropagation(); toggleComplete(task.id); }}
+                    >
+                      {task.completed && (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5">
+                          <polyline points="5 12 10 17 19 7" />
+                        </svg>
+                      )}
+                    </button>
 
-                  <div className="flex-1 min-w-0 pt-0.5">
-                    <div className={`font-medium text-[15.5px] tracking-[-0.1px] ${task.completed ? 'line-through text-[var(--text-muted)]' : 'text-[var(--text-h)]'}`}>
-                      {task.title}
-                    </div>
-                    {task.due && (
-                      <div className="mt-1.5">
-                        <span className={`due-badge ${getDueBadgeClass(task.due)}`}>
-                          {getDueLabel(task.due)}
-                        </span>
+                    <div className="flex-1 min-w-0 pt-0.5">
+                      <div className={`font-medium text-[15.5px] tracking-[-0.1px] ${task.completed ? 'line-through text-[var(--text-muted)]' : 'text-[var(--text-h)]'}`}>
+                        {task.title}
                       </div>
-                    )}
-                    {task.category && (
-                      <div className="inline-flex mt-2 text-[10px] px-2.5 py-px rounded-full border border-[var(--border)] text-[var(--text-muted)]">
-                        {task.category}
-                      </div>
-                    )}
-                  </div>
 
-                  <div className="flex flex-col items-end justify-between text-xs">
-                    {/* Priority indicator - left border style on card + badge */}
-                    <div className={`px-3 py-0.5 rounded-full font-medium tracking-[0.3px] text-[10px] uppercase flex items-center gap-1.5 ${
-                      task.priority === 'high' ? 'bg-red-100/70 text-red-700 dark:bg-red-950/70 dark:text-red-300' :
-                      task.priority === 'medium' ? 'bg-amber-100/70 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300' :
-                      'bg-emerald-100/70 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300'
-                    }`}>
-                      <span className={`inline-block w-1.5 h-1.5 rounded-full ${
-                        task.priority === 'high' ? 'bg-red-500' :
-                        task.priority === 'medium' ? 'bg-amber-500' : 'bg-emerald-500'
-                      }`} />
-                      {task.priority}
+                      {task.dueDate && (
+                        <div className="mt-1.5">
+                          <span className={`due-badge ${isOverdue ? 'overdue' : task.dueDate === new Date().toISOString().split('T')[0] ? 'today' : 'future'}`}>
+                            {isOverdue ? 'Overdue' : new Date(task.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                          </span>
+                        </div>
+                      )}
+
+                      {categoryName && (
+                        <div className="inline-flex mt-2 text-[10px] px-2.5 py-px rounded-full border border-[var(--border)] text-[var(--text-muted)]">
+                          {categoryName}
+                        </div>
+                      )}
                     </div>
-                    <button className="opacity-0 group-hover:opacity-100 text-[var(--text-muted)] hover:text-[var(--text)] transition text-xs mt-1">Edit</button>
+
+                    <div className="flex flex-col items-end justify-between text-xs">
+                      <div className={`px-3 py-0.5 rounded-full font-medium tracking-[0.3px] text-[10px] uppercase flex items-center gap-1.5 ${
+                        task.priority === 'high' ? 'bg-red-100/70 text-red-700 dark:bg-red-950/70 dark:text-red-300' :
+                        task.priority === 'medium' ? 'bg-amber-100/70 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300' :
+                        'bg-emerald-100/70 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300'
+                      }`}>
+                        <span className={`inline-block w-1.5 h-1.5 rounded-full ${
+                          task.priority === 'high' ? 'bg-red-500' :
+                          task.priority === 'medium' ? 'bg-amber-500' : 'bg-emerald-500'
+                        }`} />
+                        {task.priority}
+                      </div>
+                      <button 
+                        className="opacity-0 group-hover:opacity-100 text-[var(--text-muted)] hover:text-[var(--text)] transition text-xs mt-1"
+                        onClick={(e) => { e.stopPropagation(); openEditTask(task); }}
+                      >
+                        Edit
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             ) : (
               <div className="skeu-card p-10 text-center text-[var(--text-muted)]">
-                No tasks match your filters.
+                {searchQuery ? 'No tasks match your search.' : 'No tasks here yet.'}
               </div>
             )}
           </div>
@@ -283,14 +307,27 @@ function App() {
         </div>
       </div>
 
-      {/* FAB */}
+      {/* FAB - Now functional */}
       <button
         className="skeu-fab fixed bottom-8 right-6 md:right-8 shadow-2xl z-50"
         aria-label="Add new task"
-        onClick={() => alert('FAB clicked — full modal in Phase 2')}
+        onClick={openNewTask}
       >
         <Plus size={26} />
       </button>
+
+      {/* Task Modal */}
+      <TaskModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingTask(undefined);
+        }}
+        onSave={handleSaveTask}
+        onDelete={handleDeleteTask}
+        initialTask={editingTask}
+        categories={categories}
+      />
 
       {/* Mobile search bar */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 p-3 border-t border-[var(--border)] bg-[var(--surface)] z-40">
