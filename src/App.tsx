@@ -31,6 +31,10 @@ function App() {
   // Simple toast system for undo
   const [toast, setToast] = useState<{ message: string; action?: () => void; actionLabel?: string } | null>(null)
 
+  // PWA Install prompt handling (per the plan)
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
+  const [canInstall, setCanInstall] = useState(false)
+
   // Real task management with persistence
   const {
     tasks,
@@ -118,6 +122,23 @@ function App() {
     setIsModalOpen(true)
   }
 
+  // Handle PWA install
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+
+    if (outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+    } else {
+      console.log('User dismissed the install prompt');
+    }
+
+    setDeferredPrompt(null);
+    setCanInstall(false);
+  }
+
   // DnD sensors
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -157,6 +178,21 @@ function App() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // PWA beforeinstallprompt listener (from the plan)
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setCanInstall(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
   }, []);
 
   const handleDragEnd = (event: any) => {
@@ -260,10 +296,15 @@ function App() {
             {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
           </button>
 
-          {/* Install stub */}
-          <button className="hidden md:flex items-center gap-2 px-4 h-10 rounded-2xl text-sm font-medium border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-alt)] active:bg-[var(--surface)] transition">
-            Install App
-          </button>
+          {/* Install App button - real PWA flow */}
+          {canInstall && (
+            <button 
+              onClick={handleInstallClick}
+              className="hidden md:flex items-center gap-2 px-4 h-10 rounded-2xl text-sm font-medium border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-alt)] active:bg-[var(--surface)] transition"
+            >
+              Install App
+            </button>
+          )}
 
           {/* Avatar stub */}
           <div className="w-9 h-9 rounded-2xl bg-[var(--accent-weak)] text-white flex items-center justify-center text-xs font-medium ring-2 ring-[var(--surface)]">
