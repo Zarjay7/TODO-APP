@@ -16,6 +16,7 @@ import {
 import { TaskModal } from './components/TaskModal'
 import { TaskCard } from './components/TaskCard'
 import { Toast } from './components/Toast'
+import { EmptyState } from './components/EmptyState'
 import { useTasks } from './hooks/useTasks'
 import type { TaskView, Task } from './lib/types'
 
@@ -390,9 +391,10 @@ function App() {
                   })}
                 </SortableContext>
               ) : (
-                <div className="skeu-card p-10 text-center text-[var(--text-muted)]">
-                  {searchQuery ? 'No tasks match your search.' : 'No tasks here yet.'}
-                </div>
+                <EmptyState 
+                  view={currentView} 
+                  hasSearch={!!searchQuery} 
+                />
               )}
             </div>
           </DndContext>
