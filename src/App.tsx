@@ -505,7 +505,7 @@ function App() {
 
       {/* FAB - Now functional with ripple + scale (plan micro-interaction) */}
       <button
-        className="skeu-fab fixed bottom-3 right-0 shadow-2xl z-50"
+        className="skeu-fab fixed bottom-3 right-[-4px] shadow-2xl z-50"
         aria-label="Add new task"
         onClick={(e) => {
           // Create ripple
