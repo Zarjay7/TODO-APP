@@ -1,9 +1,17 @@
 {
-  "name": "tasks",
-  "description": "A beautiful, installable light skeuomorphic task management PWA with tactile design in light and dark grey modes.",
+  "name": "todo-app",
+  "description": "A beautiful, tactile, installable task management PWA with refined light skeuomorphism in light and dark grey modes.",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zarjay7/TODO-APP.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Zarjay7/TODO-APP/issues"
+  },
+  "homepage": "https://github.com/Zarjay7/TODO-APP#readme",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
