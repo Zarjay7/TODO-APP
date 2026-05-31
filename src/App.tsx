@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Plus, Search, CheckCircle2, Archive, Inbox, Moon, Sun, Menu, Calendar, Clock } from 'lucide-react'
 import { TaskModal } from './components/TaskModal'
 import { TaskCard } from './components/TaskCard'
+import { Toast } from './components/Toast'
 import { useTasks } from './hooks/useTasks'
 import type { TaskView, Task } from './lib/types'
 
@@ -13,8 +14,12 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingTask, setEditingTask] = useState<Task | undefined>(undefined)
 
+  // Simple toast system for undo
+  const [toast, setToast] = useState<{ message: string; action?: () => void; actionLabel?: string } | null>(null)
+
   // Real task management with persistence
   const {
+    tasks,
     filteredTasks,
     categories,
     currentView,
@@ -65,9 +70,28 @@ function App() {
   }
 
   const handleDeleteTask = (id: string) => {
-    deleteTask(id)
-    setIsModalOpen(false)
-    setEditingTask(undefined)
+    const taskToDelete = tasks.find(t => t.id === id);
+    deleteTask(id);
+    setIsModalOpen(false);
+    setEditingTask(undefined);
+
+    if (taskToDelete) {
+      setToast({
+        message: 'Task deleted',
+        actionLabel: 'Undo',
+        action: () => {
+          // Re-add the task (simple restore)
+          addTask({
+            title: taskToDelete.title,
+            description: taskToDelete.description,
+            dueDate: taskToDelete.dueDate,
+            priority: taskToDelete.priority,
+            categoryId: taskToDelete.categoryId,
+          });
+          setToast(null);
+        }
+      });
+    }
   }
 
   // View title
@@ -262,6 +286,18 @@ function App() {
         initialTask={editingTask}
         categories={categories}
       />
+
+      {/* Toast */}
+      {toast && (
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-[200]">
+          <Toast
+            message={toast.message}
+            actionLabel={toast.actionLabel}
+            onAction={toast.action}
+            onDismiss={() => setToast(null)}
+          />
+        </div>
+      )}
 
       {/* Mobile search bar */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 p-3 border-t border-[var(--border)] bg-[var(--surface)] z-40">
