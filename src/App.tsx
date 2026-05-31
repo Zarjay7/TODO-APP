@@ -25,14 +25,20 @@ function App() {
     localStorage.setItem('theme', next)
   }
 
-  // Mock tasks for visual shell (Phase 0/1)
-  const mockTasks = [
+  // Mock tasks for visual shell (Phase 0/1) — interactive for demo
+  const [mockTasks, setMockTasks] = useState([
     { id: '1', title: 'Prepare quarterly review deck', due: '2026-06-02', priority: 'high', category: 'Work', completed: false },
     { id: '2', title: 'Water the monstera', due: '2026-05-31', priority: 'low', category: 'Home', completed: true },
     { id: '3', title: 'Schedule dentist appointment', due: '2026-06-05', priority: 'medium', category: 'Health', completed: false },
     { id: '4', title: 'Finish landing page animations', due: '2026-05-30', priority: 'high', category: 'Work', completed: false },
     { id: '5', title: 'Buy oat milk and coffee', due: '', priority: 'low', category: 'Errands', completed: false },
-  ]
+  ])
+
+  const toggleMockTask = (id: string) => {
+    setMockTasks(prev =>
+      prev.map(t => t.id === id ? { ...t, completed: !t.completed } : t)
+    )
+  }
 
   const filteredTasks = mockTasks
     .filter(t => {
@@ -190,6 +196,7 @@ function App() {
                     className="skeu-checkbox mt-1" 
                     data-checked={task.completed ? "true" : "false"}
                     aria-label={task.completed ? "Mark incomplete" : "Mark complete"}
+                    onClick={() => toggleMockTask(task.id)}
                   >
                     {task.completed && <CheckCircle2 size={16} />}
                   </button>
