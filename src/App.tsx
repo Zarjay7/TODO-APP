@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Plus, Search, CheckCircle2, Clock, Archive, Inbox, Moon, Sun, Menu, Calendar } from 'lucide-react'
+import { Plus, Search, CheckCircle2, Archive, Inbox, Moon, Sun, Menu, Calendar, Clock } from 'lucide-react'
 import { TaskModal } from './components/TaskModal'
+import { TaskCard } from './components/TaskCard'
 import { useTasks } from './hooks/useTasks'
 import type { TaskView, Task } from './lib/types'
 
@@ -76,13 +77,6 @@ function App() {
     upcoming: 'Upcoming',
     completed: 'Completed',
     all: 'All Tasks'
-  }
-
-  // Get category name for display
-  const getCategoryName = (categoryId?: string) => {
-    if (!categoryId) return null
-    const cat = categories.find(c => c.id === categoryId)
-    return cat?.name
   }
 
   return (
@@ -214,79 +208,19 @@ function App() {
             ))}
           </div>
 
-          {/* Real Task List */}
+          {/* Real Task List using extracted TaskCard */}
           <div className="px-4 md:px-6 pb-28 space-y-3">
             {filteredTasks.length > 0 ? (
               filteredTasks.map(task => {
-                const categoryName = getCategoryName(task.categoryId);
-                const isOverdue = task.dueDate && task.dueDate < new Date().toISOString().split('T')[0] && !task.completed;
-
+                const category = categories.find(c => c.id === task.categoryId);
                 return (
-                  <div 
-                    key={task.id} 
-                    className="skeu-card p-4 md:p-5 flex gap-4 group relative overflow-hidden cursor-pointer"
-                    style={{
-                      borderLeft: task.priority === 'high' 
-                        ? '4px solid #c24141' 
-                        : task.priority === 'medium' 
-                          ? '4px solid #b7791f' 
-                          : '4px solid #4a704f'
-                    }}
-                    onClick={() => openEditTask(task)}
-                  >
-                    <button 
-                      className="skeu-checkbox mt-1" 
-                      data-checked={task.completed ? "true" : "false"}
-                      aria-label={task.completed ? "Mark incomplete" : "Mark complete"}
-                      onClick={(e) => { e.stopPropagation(); toggleComplete(task.id); }}
-                    >
-                      {task.completed && (
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5">
-                          <polyline points="5 12 10 17 19 7" />
-                        </svg>
-                      )}
-                    </button>
-
-                    <div className="flex-1 min-w-0 pt-0.5">
-                      <div className={`font-medium text-[15.5px] tracking-[-0.1px] ${task.completed ? 'line-through text-[var(--text-muted)]' : 'text-[var(--text-h)]'}`}>
-                        {task.title}
-                      </div>
-
-                      {task.dueDate && (
-                        <div className="mt-1.5">
-                          <span className={`due-badge ${isOverdue ? 'overdue' : task.dueDate === new Date().toISOString().split('T')[0] ? 'today' : 'future'}`}>
-                            {isOverdue ? 'Overdue' : new Date(task.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                          </span>
-                        </div>
-                      )}
-
-                      {categoryName && (
-                        <div className="inline-flex mt-2 text-[10px] px-2.5 py-px rounded-full border border-[var(--border)] text-[var(--text-muted)]">
-                          {categoryName}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex flex-col items-end justify-between text-xs">
-                      <div className={`px-3 py-0.5 rounded-full font-medium tracking-[0.3px] text-[10px] uppercase flex items-center gap-1.5 ${
-                        task.priority === 'high' ? 'bg-red-100/70 text-red-700 dark:bg-red-950/70 dark:text-red-300' :
-                        task.priority === 'medium' ? 'bg-amber-100/70 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300' :
-                        'bg-emerald-100/70 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300'
-                      }`}>
-                        <span className={`inline-block w-1.5 h-1.5 rounded-full ${
-                          task.priority === 'high' ? 'bg-red-500' :
-                          task.priority === 'medium' ? 'bg-amber-500' : 'bg-emerald-500'
-                        }`} />
-                        {task.priority}
-                      </div>
-                      <button 
-                        className="opacity-0 group-hover:opacity-100 text-[var(--text-muted)] hover:text-[var(--text)] transition text-xs mt-1"
-                        onClick={(e) => { e.stopPropagation(); openEditTask(task); }}
-                      >
-                        Edit
-                      </button>
-                    </div>
-                  </div>
+                  <TaskCard
+                    key={task.id}
+                    task={task}
+                    category={category}
+                    onToggleComplete={toggleComplete}
+                    onEdit={openEditTask}
+                  />
                 );
               })
             ) : (
