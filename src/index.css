@@ -96,8 +96,15 @@ body {
 
 /* Stronger lift specifically for interactive task cards */
 .TaskCard:hover {
-  transform: translateY(-4px);
+  transform: translateY(-4px) scale(1.01);
   box-shadow: var(--shadow-lg);
+}
+
+/* Pressed state on cards */
+.TaskCard:active {
+  transform: translateY(-1px) scale(0.985);
+  box-shadow: var(--shadow-md);
+  transition: transform 0.05s ease, box-shadow 0.05s ease;
 }
 
 /* Embossed / recessed inputs */
@@ -147,10 +154,10 @@ body {
 
 /* Pressed / active state — feels like you're pushing it in */
 .skeu-checkbox:active {
-  transform: scale(0.88);
+  transform: scale(0.82);
   box-shadow: 
-    inset 0 4px 7px rgba(0, 0, 0, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    inset 0 5px 9px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 /* Checked state — filled with subtle depth */
