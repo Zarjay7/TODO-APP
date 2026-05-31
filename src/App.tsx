@@ -314,7 +314,7 @@ function App() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search tasks..."
-            className="skeu-input w-full pl-10 pr-4 py-2 text-sm"
+            className="skeu-input w-full pl-12 pr-4 py-2 text-sm"
           />
         </div>
 
@@ -560,7 +560,7 @@ function App() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search tasks..."
-            className="skeu-input w-full pl-10 text-sm py-3"
+            className="skeu-input w-full pl-12 text-sm py-3"
           />
         </div>
       </div>
