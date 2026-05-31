@@ -22,6 +22,7 @@ export interface Task {
   categoryId?: string;
   completed: boolean;
   createdAt: string; // ISO timestamp
+  completedAt?: string; // ISO timestamp when completed
   order: number; // for drag and drop positioning
 }
 

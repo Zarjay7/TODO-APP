@@ -151,11 +151,16 @@ export function useTasks(): UseTasksReturn {
 
   const toggleComplete = useCallback((id: string) => {
     setTasks(prev =>
-      prev.map(task =>
-        task.id === id
-          ? { ...task, completed: !task.completed }
-          : task
-      )
+      prev.map(task => {
+        if (task.id !== id) return task;
+
+        const newCompleted = !task.completed;
+        return {
+          ...task,
+          completed: newCompleted,
+          completedAt: newCompleted ? new Date().toISOString() : undefined,
+        };
+      })
     );
   }, []);
 

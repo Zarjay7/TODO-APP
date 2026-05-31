@@ -47,6 +47,49 @@ function App() {
     addCategory,
   } = useTasks()
 
+  // Progress & Streak calculations (dynamic)
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter(t => t.completed).length;
+  const completionPercent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+  const today = new Date().toISOString().split('T')[0];
+  const overdueTasks = tasks.filter(t => !t.completed && t.dueDate && t.dueDate < today).length;
+  const dueTodayTasks = tasks.filter(t => !t.completed && t.dueDate === today).length;
+
+  // Simple streak: consecutive days with at least one task completed
+  const calculateStreak = () => {
+    const completedDates = tasks
+      .filter(t => t.completed && t.completedAt)
+      .map(t => t.completedAt!.split('T')[0])
+      .sort()
+      .filter((date, index, arr) => arr.indexOf(date) === index); // unique sorted dates
+
+    if (completedDates.length === 0) return 0;
+
+    let streak = 0;
+    let currentDate = new Date();
+    const currentDateStr = currentDate.toISOString().split('T')[0];
+
+    // Check if today has activity
+    if (!completedDates.includes(currentDateStr)) {
+      // Check yesterday instead for ongoing streak
+      currentDate.setDate(currentDate.getDate() - 1);
+    }
+
+    while (true) {
+      const dateStr = currentDate.toISOString().split('T')[0];
+      if (completedDates.includes(dateStr)) {
+        streak++;
+        currentDate.setDate(currentDate.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+    return streak;
+  };
+
+  const currentStreak = calculateStreak();
+
   // Theme handling
   useEffect(() => {
     const saved = localStorage.getItem('theme') as Theme | null
@@ -307,7 +350,7 @@ function App() {
                 <p className="text-[var(--text-muted)] text-sm mt-0.5">{filteredTasks.length} tasks • Light skeuomorphic design</p>
               </div>
               <div className="text-xs px-3 py-1 rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--text-muted)] hidden md:block">
-                68% complete this week
+                {completionPercent}% complete
               </div>
             </div>
           </div>
@@ -355,13 +398,17 @@ function App() {
           </DndContext>
         </main>
 
-        {/* Right panel stub (desktop) */}
+        {/* Right panel - Dynamic Progress & Streak */}
         <div className="hidden xl:block w-80 border-l border-[var(--border)] p-6 bg-[var(--surface)]/30 flex-shrink-0">
           <div className="text-sm font-medium mb-3 text-[var(--text-h)]">Today’s Progress</div>
           <div className="skeu-card aspect-square flex items-center justify-center text-6xl font-light tracking-tighter text-[var(--accent)]">
-            68<span className="text-2xl align-super">%</span>
+            {completionPercent}<span className="text-2xl align-super">%</span>
           </div>
-          <div className="mt-6 text-xs text-[var(--text-muted)]">3 tasks due • 1 overdue</div>
+          <div className="mt-6 text-xs text-[var(--text-muted)] space-y-1">
+            <div>{dueTodayTasks} tasks due today</div>
+            <div>{overdueTasks} overdue</div>
+            <div className="pt-1 text-[var(--accent)] font-medium">{currentStreak} day streak</div>
+          </div>
         </div>
       </div>
 
