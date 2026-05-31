@@ -17,6 +17,7 @@ import { TaskModal } from './components/TaskModal'
 import { TaskCard } from './components/TaskCard'
 import { Toast } from './components/Toast'
 import { EmptyState } from './components/EmptyState'
+import { TaskSkeleton } from './components/TaskSkeleton'
 import { useTasks } from './hooks/useTasks'
 import type { TaskView, Task } from './lib/types'
 
@@ -34,6 +35,9 @@ function App() {
   // PWA Install prompt handling (per the plan)
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
   const [canInstall, setCanInstall] = useState(false)
+
+  // Loading state for skeleton (polish item from the plan)
+  const [isLoading, setIsLoading] = useState(true)
 
   // Real task management with persistence
   const {
@@ -193,6 +197,12 @@ function App() {
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
+  }, []);
+
+  // Simulate initial data load for skeleton (polish from the plan)
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 650);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleDragEnd = (event: any) => {
@@ -413,7 +423,9 @@ function App() {
             onDragEnd={handleDragEnd}
           >
             <div className="px-4 md:px-6 pb-28 space-y-3">
-              {filteredTasks.length > 0 ? (
+              {isLoading ? (
+                <TaskSkeleton count={6} />
+              ) : filteredTasks.length > 0 ? (
                 <SortableContext 
                   items={filteredTasks.map(t => t.id)} 
                   strategy={verticalListSortingStrategy}
