@@ -1,6 +1,18 @@
 {
   "name": "todo-app",
-  "description": "A beautiful, tactile, installable task management PWA with refined light skeuomorphism in light and dark grey modes.",
+  "description": "A beautiful, tactile task management PWA built with refined light skeuomorphism. Installable, fully offline, and obsessively crafted for material feel in both light and dark modes.",
+  "keywords": [
+    "todo",
+    "task-manager",
+    "pwa",
+    "skeuomorphism",
+    "react",
+    "typescript",
+    "tailwind",
+    "offline-first",
+    "dark-mode",
+    "productivity"
+  ],
   "private": true,
   "version": "0.0.0",
   "type": "module",
