@@ -82,6 +82,39 @@ function App() {
     })
   )
 
+  // Keyboard shortcuts (plan requirement)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if typing in input/textarea
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        if (e.key === 'Escape') {
+          setIsModalOpen(false);
+          setEditingTask(undefined);
+        }
+        return;
+      }
+
+      if (e.key.toLowerCase() === 'n') {
+        e.preventDefault();
+        openNewTask();
+      }
+
+      if (e.key === '/') {
+        e.preventDefault();
+        const searchInput = document.querySelector('input[placeholder="Search tasks..."]') as HTMLInputElement;
+        searchInput?.focus();
+      }
+
+      if (e.key === 'Escape') {
+        setIsModalOpen(false);
+        setEditingTask(undefined);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const handleDragEnd = (event: any) => {
     const { active, over } = event
 
