@@ -248,6 +248,18 @@ body {
   }
 }
 
+/* Subtle view transition (plan requirement) */
+@keyframes fadeInSlide {
+  from {
+    opacity: 0.4;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .skeu-fab::after {
   content: '';
   position: absolute;

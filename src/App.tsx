@@ -40,6 +40,9 @@ function App() {
   // Loading state for skeleton (polish item from the plan)
   const [isLoading, setIsLoading] = useState(true)
 
+  // View transition state for smooth changes (plan requirement)
+  const [viewTransitionKey, setViewTransitionKey] = useState(0)
+
   // Real task management with persistence
   const {
     tasks,
@@ -217,6 +220,11 @@ function App() {
     const timer = setTimeout(() => setIsLoading(false), 650);
     return () => clearTimeout(timer);
   }, []);
+
+  // Bump transition key when view changes for fade/slide effect
+  useEffect(() => {
+    setViewTransitionKey(prev => prev + 1);
+  }, [currentView, searchQuery]);
 
   const handleDragEnd = (event: any) => {
     const { active, over } = event
@@ -436,6 +444,14 @@ function App() {
             onDragEnd={handleDragEnd}
           >
             <div className="px-4 md:px-6 pb-28 space-y-3">
+              <div 
+                key={viewTransitionKey}
+                className="transition-all duration-200 ease-out"
+                style={{ 
+                  opacity: 0.6, 
+                  animation: 'fadeInSlide 180ms ease-out forwards' 
+                }}
+              >
               {isLoading ? (
                 <TaskSkeleton count={6} />
               ) : filteredTasks.length > 0 ? (
@@ -462,6 +478,7 @@ function App() {
                   hasSearch={!!searchQuery} 
                 />
               )}
+              </div>
             </div>
           </DndContext>
         </main>
