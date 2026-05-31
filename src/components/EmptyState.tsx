@@ -51,7 +51,21 @@ function getEmptyStateConfig(view: TaskView) {
       return {
         title: "Nothing due today",
         description: "Enjoy the breathing room. Add tasks with today's date to see them here.",
-        icon: <Calendar size={56} strokeWidth={1.25} />,
+        icon: (
+          <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[var(--text-muted)]">
+            <rect x="8" y="12" width="56" height="52" rx="6" fill="#2a2f38" opacity="0.3"/>
+            <rect x="6" y="10" width="56" height="52" rx="6" fill="var(--surface)" stroke="var(--border)" strokeWidth="1.5"/>
+            <rect x="6" y="10" width="56" height="14" rx="6" fill="var(--surface-alt)"/>
+            <rect x="14" y="4" width="6" height="12" rx="2" fill="var(--surface)" stroke="var(--border)" strokeWidth="1"/>
+            <rect x="52" y="4" width="6" height="12" rx="2" fill="var(--surface)" stroke="var(--border)" strokeWidth="1"/>
+            <line x1="14" y1="30" x2="58" y2="30" stroke="var(--border)" strokeWidth="1" opacity="0.5"/>
+            <line x1="14" y1="42" x2="58" y2="42" stroke="var(--border)" strokeWidth="1" opacity="0.5"/>
+            <line x1="14" y1="54" x2="58" y2="54" stroke="var(--border)" strokeWidth="1" opacity="0.5"/>
+            <circle cx="22" cy="24" r="2" fill="var(--text-muted)" opacity="0.6"/>
+            <circle cx="36" cy="24" r="2" fill="var(--text-muted)" opacity="0.6"/>
+            <circle cx="50" cy="24" r="2" fill="var(--text-muted)" opacity="0.6"/>
+          </svg>
+        ),
       };
     case 'upcoming':
       return {
