@@ -18,6 +18,7 @@ import { TaskCard } from './components/TaskCard'
 import { Toast } from './components/Toast'
 import { EmptyState } from './components/EmptyState'
 import { TaskSkeleton } from './components/TaskSkeleton'
+import { burstConfetti } from './lib/confetti'
 import { useTasks } from './hooks/useTasks'
 import type { TaskView, Task } from './lib/types'
 
@@ -51,10 +52,22 @@ function App() {
     addTask,
     updateTask,
     deleteTask,
-    toggleComplete,
+    toggleComplete: originalToggleComplete,
     reorderTasks,
     addCategory,
   } = useTasks()
+
+  // Wrapper to trigger confetti when completing the last pending task (plan item)
+  const toggleComplete = (id: string) => {
+    const wasLast = tasks.filter(t => !t.completed).length === 1;
+    originalToggleComplete(id);
+
+    if (wasLast) {
+      setTimeout(() => {
+        burstConfetti(110);
+      }, 220);
+    }
+  }
 
   // Progress & Streak calculations (dynamic)
   const totalTasks = tasks.length;
