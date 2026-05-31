@@ -1,4 +1,6 @@
 import type { Task, Category } from '../lib/types';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface TaskCardProps {
   task: Task;
@@ -26,6 +28,22 @@ function getDueBadgeInfo(dueDate?: string) {
 }
 
 export function TaskCard({ task, category, onToggleComplete, onEdit }: TaskCardProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: task.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.6 : 1,
+    zIndex: isDragging ? 50 : 'auto',
+  };
+
   const dueInfo = getDueBadgeInfo(task.dueDate);
   const isCompleted = task.completed;
 
@@ -44,9 +62,18 @@ export function TaskCard({ task, category, onToggleComplete, onEdit }: TaskCardP
 
   return (
     <div 
-      className="skeu-card p-4 md:p-5 flex gap-4 group relative overflow-hidden cursor-pointer active:scale-[0.995] transition-transform"
-      style={{ borderLeft: `4px solid ${priorityBorderColor}` }}
-      onClick={() => onEdit(task)}
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      className="skeu-card p-4 md:p-5 flex gap-4 group relative overflow-hidden cursor-grab active:cursor-grabbing active:scale-[0.995] transition-transform"
+      style={{ 
+        borderLeft: `4px solid ${priorityBorderColor}`,
+        ...style 
+      }}
+      onClick={() => {
+        // Prevent opening edit modal while dragging
+        if (!isDragging) onEdit(task);
+      }}
     >
       {/* Checkbox */}
       <button 

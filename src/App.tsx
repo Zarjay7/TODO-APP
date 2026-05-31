@@ -1,5 +1,18 @@
 import { useState, useEffect } from 'react'
 import { Plus, Search, CheckCircle2, Archive, Inbox, Moon, Sun, Menu, Calendar, Clock } from 'lucide-react'
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
 import { TaskModal } from './components/TaskModal'
 import { TaskCard } from './components/TaskCard'
 import { Toast } from './components/Toast'
@@ -30,6 +43,7 @@ function App() {
     updateTask,
     deleteTask,
     toggleComplete,
+    reorderTasks,
   } = useTasks()
 
   // Theme handling
@@ -57,6 +71,24 @@ function App() {
   const openEditTask = (task: Task) => {
     setEditingTask(task)
     setIsModalOpen(true)
+  }
+
+  // DnD sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
+
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event
+
+    if (active.id !== over?.id) {
+      // We use the existing reorderTasks from the hook
+      // Note: reorderTasks expects draggedId and targetId
+      reorderTasks(active.id as string, over.id as string)
+    }
   }
 
   const handleSaveTask = (taskData: Omit<Task, 'id' | 'createdAt' | 'completed' | 'order'>) => {
@@ -232,27 +264,38 @@ function App() {
             ))}
           </div>
 
-          {/* Real Task List using extracted TaskCard */}
-          <div className="px-4 md:px-6 pb-28 space-y-3">
-            {filteredTasks.length > 0 ? (
-              filteredTasks.map(task => {
-                const category = categories.find(c => c.id === task.categoryId);
-                return (
-                  <TaskCard
-                    key={task.id}
-                    task={task}
-                    category={category}
-                    onToggleComplete={toggleComplete}
-                    onEdit={openEditTask}
-                  />
-                );
-              })
-            ) : (
-              <div className="skeu-card p-10 text-center text-[var(--text-muted)]">
-                {searchQuery ? 'No tasks match your search.' : 'No tasks here yet.'}
-              </div>
-            )}
-          </div>
+          {/* Real Task List with DnD */}
+          <DndContext 
+            sensors={sensors} 
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <div className="px-4 md:px-6 pb-28 space-y-3">
+              {filteredTasks.length > 0 ? (
+                <SortableContext 
+                  items={filteredTasks.map(t => t.id)} 
+                  strategy={verticalListSortingStrategy}
+                >
+                  {filteredTasks.map(task => {
+                    const category = categories.find(c => c.id === task.categoryId);
+                    return (
+                      <TaskCard
+                        key={task.id}
+                        task={task}
+                        category={category}
+                        onToggleComplete={toggleComplete}
+                        onEdit={openEditTask}
+                      />
+                    );
+                  })}
+                </SortableContext>
+              ) : (
+                <div className="skeu-card p-10 text-center text-[var(--text-muted)]">
+                  {searchQuery ? 'No tasks match your search.' : 'No tasks here yet.'}
+                </div>
+              )}
+            </div>
+          </DndContext>
         </main>
 
         {/* Right panel stub (desktop) */}
