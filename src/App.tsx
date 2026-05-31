@@ -389,7 +389,7 @@ function App() {
                   className="w-full text-left px-4 py-2 rounded-2xl hover:bg-[var(--surface-alt)] flex items-center gap-2 text-[var(--text)]"
                 >
                   <span 
-                    className="inline-block w-2 h-2 rounded-full" 
+                    className="inline-block w-2 h-2 rounded-full flex-shrink-0" 
                     style={{ backgroundColor: cat.color }}
                   />
                   {cat.name}

@@ -109,7 +109,7 @@ export function TaskCard({ task, category, onToggleComplete, onEdit }: TaskCardP
         {category && (
           <div className="inline-flex mt-2 text-[10px] px-2.5 py-px rounded-full border border-[var(--border)] text-[var(--text-muted)] items-center gap-1.5">
             <span 
-              className="w-1.5 h-1.5 rounded-full" 
+              className="w-1.5 h-1.5 rounded-full flex-shrink-0" 
               style={{ backgroundColor: category.color }}
             />
             {category.name}

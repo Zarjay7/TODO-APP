@@ -198,7 +198,7 @@ export function TaskModal({
                   }`}
                 >
                   <span 
-                    className="w-2.5 h-2.5 rounded-full" 
+                    className="w-2.5 h-2.5 rounded-full flex-shrink-0" 
                     style={{ backgroundColor: cat.color }}
                   />
                   {cat.name}
