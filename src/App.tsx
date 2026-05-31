@@ -507,7 +507,7 @@ function App() {
                 {['S','M','T','W','T','F','S'].map((d, i) => (
                   <div key={i} className="font-medium py-0.5">{d}</div>
                 ))}
-                {/* Dynamic current month calendar with real today highlighted */}
+                {/* Dynamic current month calendar with real today highlighted - skeuomorphic */}
                 {(() => {
                   const now = new Date();
                   const year = now.getFullYear();
@@ -530,7 +530,7 @@ function App() {
                         key={d} 
                         className={`py-1 rounded-lg text-[10px] transition-all ${
                           isToday 
-                            ? 'bg-[var(--accent)] text-white font-semibold shadow-sm' 
+                            ? 'bg-[var(--accent)] text-white font-semibold shadow-sm scale-105' 
                             : 'hover:bg-[var(--surface-alt)]'
                         }`}
                       >
