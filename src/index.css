@@ -231,6 +231,23 @@ body {
   overflow: hidden;
 }
 
+/* Ripple effect for FAB (plan micro-interaction) */
+.skeu-fab .ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+  pointer-events: none;
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
 .skeu-fab::after {
   content: '';
   position: absolute;

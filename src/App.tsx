@@ -480,11 +480,25 @@ function App() {
         </div>
       </div>
 
-      {/* FAB - Now functional */}
+      {/* FAB - Now functional with ripple + scale (plan micro-interaction) */}
       <button
         className="skeu-fab fixed bottom-8 right-6 md:right-8 shadow-2xl z-50"
         aria-label="Add new task"
-        onClick={openNewTask}
+        onClick={(e) => {
+          // Create ripple
+          const rect = e.currentTarget.getBoundingClientRect();
+          const ripple = document.createElement('span');
+          ripple.className = 'ripple';
+          const size = Math.max(rect.width, rect.height);
+          ripple.style.width = ripple.style.height = `${size}px`;
+          ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
+          ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
+          e.currentTarget.appendChild(ripple);
+
+          setTimeout(() => ripple.remove(), 600);
+
+          openNewTask();
+        }}
       >
         <Plus size={26} />
       </button>
